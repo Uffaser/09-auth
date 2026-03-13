@@ -4,9 +4,8 @@ import { User } from "@/types/user";
 import { Note } from "@/types/note";
 import { GetNotesResponse } from "./clientApi";
 
-const cookiesStore = await cookies();
-
-export async function fetchNotes(page:number, search:string, tag?:string):Promise<GetNotesResponse>{
+export async function fetchNotes(page: number, search: string, tag?: string): Promise<GetNotesResponse>{
+    const cookiesStore = await cookies();
     const { data } = await nextServer.get<GetNotesResponse>('/notes', {
         params: {
             page: page,
@@ -20,6 +19,7 @@ export async function fetchNotes(page:number, search:string, tag?:string):Promis
 }
     
 export async function fetchNoteById(id: string) {
+    const cookiesStore = await cookies();
     const { data } = await nextServer.get<Note>(`/notes/${id}`, {
         headers: { Cookie: cookiesStore.toString() }
     });
@@ -27,6 +27,7 @@ export async function fetchNoteById(id: string) {
 }
 
 export async function checkSession() {
+    const cookiesStore = await cookies();
     const res = nextServer.get('/auth/session', {
         headers: { Cookie: cookiesStore.toString() }
     })
@@ -34,6 +35,7 @@ export async function checkSession() {
 }
 
 export async function getMe(): Promise<User> {
+    const cookiesStore = await cookies();
     const {data} = await nextServer.get<User>('/users/me', {
         headers: { Cookie: cookiesStore.toString() }
     })
