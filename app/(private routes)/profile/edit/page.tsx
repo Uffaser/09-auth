@@ -4,7 +4,7 @@ import Image from 'next/image';
 import css from './EditProfilePage.module.css';
 import { useAuthStore } from '@/lib/store/authStore';
 import { useRouter } from 'next/navigation';
-import { getMe, updateMe } from '@/lib/api/clientApi';
+import { updateMe } from '@/lib/api/clientApi';
 import { useState } from 'react';
 
 export default function EditProfile() {
@@ -14,9 +14,7 @@ export default function EditProfile() {
 
   const handleUpdateUsername = async (formData: FormData) => {
     try {
-      const user = await getMe();
       const newUsername = formData.get('username') as string;
-      console.log(newUsername);
       if (user) {
         const updateUser = {
           ...user,
@@ -42,7 +40,10 @@ export default function EditProfile() {
         <h1 className={css.formTitle}>Edit Profile</h1>
 
         <Image
-          src="https://ac.goit.global/fullstack/react/default-avatar.jpg"
+          src={
+            user?.avatar ||
+            'https://ac.goit.global/fullstack/react/default-avatar.jpg'
+          }
           alt="User Avatar"
           width={120}
           height={120}
@@ -75,6 +76,7 @@ export default function EditProfile() {
               Cancel
             </button>
           </div>
+          {error && <p>{error}</p>}
         </form>
       </div>
     </main>

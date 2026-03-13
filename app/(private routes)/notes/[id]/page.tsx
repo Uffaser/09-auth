@@ -2,10 +2,10 @@ import {
   dehydrate,
   HydrationBoundary,
   QueryClient,
-} from "@tanstack/react-query";
-import NoteDetailsClient from "./NoteDetails.client";
-import { Metadata } from "next";
-import { fetchNoteById } from "@/lib/api/clientApi";
+} from '@tanstack/react-query';
+import NoteDetailsClient from './NoteDetails.client';
+import { Metadata } from 'next';
+import { fetchNoteById } from '@/lib/api/serverApi';
 
 interface Props {
   params: Promise<{ id: string }>;
@@ -23,7 +23,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       url: `https://08-zustand-pt9abt0kt-uffasers-projects.vercel.app/notes/${id}`,
       images: [
         {
-          url: "https://ac.goit.global/fullstack/react/notehub-og-meta.jpg",
+          url: 'https://ac.goit.global/fullstack/react/notehub-og-meta.jpg',
           width: 1200,
           height: 630,
         },
@@ -37,7 +37,7 @@ export default async function NoteDetails({ params }: Props) {
   const queryClient = new QueryClient();
 
   queryClient.prefetchQuery({
-    queryKey: ["note", id],
+    queryKey: ['note', id],
     queryFn: () => fetchNoteById(id),
   });
   return (

@@ -1,9 +1,10 @@
-import css from "./NoteForm.module.css";
-import { useId } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { toast, ToastContainer } from "react-toastify";
-import { useNoteStore } from "@/lib/store/noteStore";
-import { createNote } from "@/lib/api/clientApi";
+import css from './NoteForm.module.css';
+import { useId } from 'react';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { toast, ToastContainer } from 'react-toastify';
+import { useNoteStore } from '@/lib/store/noteStore';
+import { createNote } from '@/lib/api/clientApi';
+import { useRouter } from 'next/navigation';
 
 interface NoteFormValues {
   title: string;
@@ -11,19 +12,16 @@ interface NoteFormValues {
   tag: string;
 }
 
-interface NoteFormProps {
-  onClose: () => void;
-}
-
-export default function NoteForm({ onClose }: NoteFormProps) {
+export default function NoteForm() {
   const queryClient = useQueryClient();
   const fieldId = useId();
   const { draft, setDraft, deleteDraft } = useNoteStore();
+  const router = useRouter();
 
   const handleChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >,
+    >
   ) => {
     setDraft({
       ...draft,
@@ -34,27 +32,27 @@ export default function NoteForm({ onClose }: NoteFormProps) {
   const { mutate, isPending } = useMutation({
     mutationFn: createNote,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["note"] });
-      onClose();
+      queryClient.invalidateQueries({ queryKey: ['note'] });
+      router.back();
       deleteDraft();
     },
-    onError: () => console.log("Error"),
+    onError: () => console.log('Error'),
   });
 
   const handleSubmit = (formData: FormData) => {
     const formValue: NoteFormValues = {
-      title: formData.get("title") as string,
-      content: formData.get("content") as string,
-      tag: formData.get("tag") as string,
+      title: formData.get('title') as string,
+      content: formData.get('content') as string,
+      tag: formData.get('tag') as string,
     };
     if (formValue.title.length < 3) {
-      toast("Title must be at least 3 characters");
+      toast('Title must be at least 3 characters');
       return;
     } else if (formValue.title.length > 50) {
-      toast("Title is too long");
+      toast('Title is too long');
       return;
     } else if (formValue.content.length > 500) {
-      toast("Content is too long");
+      toast('Content is too long');
       return;
     }
 
@@ -106,11 +104,15 @@ export default function NoteForm({ onClose }: NoteFormProps) {
         </div>
 
         <div className={css.actions}>
-          <button type="button" onClick={onClose} className={css.cancelButton}>
+          <button
+            type="button"
+            onClick={() => router.back()}
+            className={css.cancelButton}
+          >
             Cancel
           </button>
           <button type="submit" className={css.submitButton} disabled={false}>
-            {isPending ? "Note creating..." : "Create note"}
+            {isPending ? 'Note creating...' : 'Create note'}
           </button>
         </div>
       </form>
