@@ -9,6 +9,8 @@ import { useAuthStore } from '@/lib/store/authStore';
 export default function SingUp() {
   const router = useRouter();
   const [error, setError] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const setUser = useAuthStore(state => state.setUser);
 
   const handleSubmit = async (formData: FormData) => {
@@ -19,12 +21,14 @@ export default function SingUp() {
       const res = await register(formValues);
       if (res) {
         setUser(res);
+        setEmail('');
+        setPassword('');
         router.push('/profile');
       } else {
         setError('Invalid email or password');
       }
     } catch {
-      setError('Oops... some error');
+      setError('Invalid email or password');
     }
   };
 
@@ -39,6 +43,8 @@ export default function SingUp() {
             type="email"
             name="email"
             className={css.input}
+            value={email}
+            onChange={e => setEmail(e.target.value)}
             required
           />
         </div>
@@ -50,6 +56,8 @@ export default function SingUp() {
             type="password"
             name="password"
             className={css.input}
+            value={password}
+            onChange={e => setPassword(e.target.value)}
             required
           />
         </div>
